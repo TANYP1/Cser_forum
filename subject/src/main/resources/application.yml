@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:mysql://rm-2zep558g4c61xaxhgmo.mysql.rds.aliyuncs.com:3306/cser_forum?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: 'tANYUPENG@123'
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.typer.subject.model
+
+logging:
+  level:
+    root: INFO
+    com.example: DEBUG
+
+  file:
+    name: app.log
+    path: logs
+
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n"
