@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.net.http.HttpResponse;
 
 @RestController
+@RequestMapping("/user")
 public class LoginController {
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
     @Autowired
