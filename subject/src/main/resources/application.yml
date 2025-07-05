@@ -1,4 +1,10 @@
 spring:
+  application:
+    name: subject
+  web:
+    mvc:
+      servlet:
+        path: /api
   datasource:
     url: jdbc:mysql://rm-2zep558g4c61xaxhgmo.mysql.rds.aliyuncs.com:3306/cser_forum?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
     username: root

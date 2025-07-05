@@ -2,6 +2,10 @@ package com.typer.subject.service;
 
 import com.typer.subject.common.Resp;
 import com.typer.subject.model.dto.LoginDTO;
+import com.typer.subject.model.vo.LoginVO;
+
+import javax.servlet.http.HttpServletResponse;
+
 
 public interface LoginService {
     /**
@@ -9,6 +13,6 @@ public interface LoginService {
      * @param loginDTO 传递的参数
      * @return 返回成功登录信息，失败的话直接抛异常。
      */
-    Resp<String> login(LoginDTO loginDTO);
+    Resp<LoginVO> login(LoginDTO loginDTO, HttpServletResponse response);
 
 }
