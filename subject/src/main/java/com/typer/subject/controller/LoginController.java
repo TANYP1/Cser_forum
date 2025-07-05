@@ -56,6 +56,21 @@ public class LoginController {
     }
 
     /**
+     * 修改密码时获取验证码
+     * @param userEmail 用户邮箱
+     * @return 验证码信息
+     */
+    @PostMapping("/getFixCode")
+    Resp<String> getFixCode(@RequestBody String userEmail){
+        try{
+            return loginService.getFixCode(userEmail);
+        }catch (Exception e){
+            logger.error("获取验证码失败：{}",e.getMessage());
+            return Resp.failed("获取验证码失败："+e.getMessage(),null);
+        }
+    }
+
+    /**
      * 校验邮箱和验证码
      * @param verifyCodeDTO 邮箱和验证码
      * @return 校验结果

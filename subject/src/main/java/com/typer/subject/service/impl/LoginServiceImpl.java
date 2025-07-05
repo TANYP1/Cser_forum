@@ -222,4 +222,38 @@ public class LoginServiceImpl implements LoginService {
         logger.info("用户修改密码成功：email: {}",userEmail);
         return Resp.ok();
     }
+    @Override
+    public Resp<String> getFixCode(String userEmail) {
+        if (!isValidEmail(userEmail)) {
+            logger.error("邮箱格式不合理：{}", userEmail);
+            throw new IllegalArgumentException("邮箱格式不合理");
+        }
+        //1.验证邮箱是否注册过
+        CserUser user = userMapper.getUserByEmail(userEmail);
+        //1.1未注册过直接返回信息
+        if (user == null) {
+            logger.error("用户不存在：{}",userEmail);
+            throw new IllegalArgumentException("用户不存在: "+userEmail);
+        }
+
+        //2.注册过，创建验证码
+        String code = CodeGenerator.generateNumberCode(6);
+        //3.存储验证码和邮箱
+        EmailVerificationCode emailVerificationCode = new EmailVerificationCode();
+        emailVerificationCode.setCode(code);
+        emailVerificationCode.setEmail(userEmail);
+        emailVerificationCode.setCreatedAt(LocalDateTime.now());
+        emailVerificationCode.setExpiresAt(LocalDateTime.now().plusMinutes(10));
+        try {
+            emailVerificationCodeMapper.insert(emailVerificationCode);
+            //4.发送验证码到邮箱
+            mailService.sendSimpleMail(userEmail, "注册验证码", "您的验证码是：" + code+"\n有效期为10min，请在10min内完成注册");
+            logger.info("发送验证码成功：{}",code);
+            return Resp.ok("success");
+        } catch (Exception e) {
+            logger.error("验证码发送失败：{}",code);
+            throw new IllegalArgumentException("验证码发送失败：" + e.getMessage());
+        }
+    }
+
 }
