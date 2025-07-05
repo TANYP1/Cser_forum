@@ -4,7 +4,7 @@ spring:
   web:
     mvc:
       servlet:
-        path: /api
+        path: /cser
   output:
     ansi:
       enabled: always
@@ -13,6 +13,16 @@ spring:
     username: root
     password: 'tANYUPENG@123'
     driver-class-name: com.mysql.cj.jdbc.Driver
+  mail:
+    host: smtp.qq.com
+    port: 465
+    username: 2371945564@qq.com
+    password: cmjpyfjokdcydjec
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml
