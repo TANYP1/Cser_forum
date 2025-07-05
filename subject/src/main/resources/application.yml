@@ -5,6 +5,9 @@ spring:
     mvc:
       servlet:
         path: /api
+  output:
+    ansi:
+      enabled: always
   datasource:
     url: jdbc:mysql://rm-2zep558g4c61xaxhgmo.mysql.rds.aliyuncs.com:3306/cser_forum?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
     username: root
@@ -20,9 +23,23 @@ logging:
     root: INFO
     com.example: DEBUG
 
+  # 日志文件配置
   file:
-    name: app.log
-    path: logs
+    name: log/app.log  # 统一输出到log文件夹
 
+  # 日志模式配置
   pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n"
+    # 控制台带颜色输出
+    console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){faint} %clr(%-5level) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n%wEx"
+
+    # 文件日志不带颜色（按天滚动）
+    file: "%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n"
+
+  # 高级日志滚动配置
+  logback:
+    rollingpolicy:
+      file-name-pattern: log/app.%d{yyyy-MM-dd}.%i.log  # 按天滚动
+      max-file-size: 50MB  # 单文件最大50MB
+      max-history: 30      # 保留30天日志
+      total-size-cap: 10GB # 总日志容量限制
+      clean-history-on-start: true # 启动时清理过期日志

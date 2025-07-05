@@ -3,7 +3,7 @@ package com.typer.subject.model.entity;
 import lombok.Data;
 
 @Data
-public class User {
+public class CserUser {
     private Integer id;                 // 用户主键ID
     private String username;            // 用户名
     private String passwordHash;        // bcrypt加密后的用户密码

@@ -1,7 +1,7 @@
 package com.typer.subject.interceptor;
 
 import com.typer.subject.mapper.SessionMapper;
-import com.typer.subject.model.entity.Session;
+import com.typer.subject.model.entity.CserSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,14 +33,14 @@ public class AuthInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        Session session = sessionMapper.getById(sessionId);
-        if (session == null || !session.getIsValid() || session.getExpiresAt().before(new Timestamp(System.currentTimeMillis()))) {
+        CserSession cserSession = sessionMapper.getById(sessionId);
+        if (cserSession == null || !cserSession.getIsValid() || cserSession.getExpiresAt().before(new Timestamp(System.currentTimeMillis()))) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
         }
         //刷新有效期
-        session.setExpiresAt(new Timestamp(System.currentTimeMillis()+24*60*60*1000));
-        sessionMapper.updateSession(session);
+        cserSession.setExpiresAt(new Timestamp(System.currentTimeMillis()+24*60*60*1000));
+        sessionMapper.updateSession(cserSession);
         return true;
     }
 }

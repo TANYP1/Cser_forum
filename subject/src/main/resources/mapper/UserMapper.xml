@@ -4,7 +4,7 @@
 <mapper namespace="com.typer.subject.mapper.UserMapper">
 
 <!--    <select id="getUserById" resultType="com.example.demo.model.User">-->
-<!--        SELECT * FROM user WHERE id = #{id}-->
+<!--        SELECT * FROM cserUser WHERE id = #{id}-->
 <!--    </select>-->
 
     <!-- 你可以定义insert、update等语句 -->

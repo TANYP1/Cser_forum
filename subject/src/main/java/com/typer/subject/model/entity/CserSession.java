@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Session {
+public class CserSession {
     private String sessionId;  // 会话唯一标识
     private Integer userId;             // 关联的用户ID
     private java.sql.Timestamp createdAt;   // 会话创建时间
