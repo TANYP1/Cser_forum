@@ -37,4 +37,11 @@ public interface LoginService {
      * @return 注册结果
      */
     Resp<Void> register(RegisterDTO registerDTO);
+
+    /**
+     * 修改用户密码
+     * @param loginDTO 用户邮箱和新密码
+     * @return 成功或者失败
+     */
+    Resp<Void> fixPassword(LoginDTO loginDTO);
 }

@@ -1,10 +1,7 @@
 package com.typer.subject.mapper;
 
 import com.typer.subject.model.entity.CserUser;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface UserMapper {
@@ -14,4 +11,7 @@ public interface UserMapper {
             "VALUES (#{username}, #{passwordHash}, #{email}, #{phoneNumber}, #{isActive}, #{isAdmin}, #{isVerified}, #{createdAt}, #{updatedAt})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(CserUser cserUser);
+
+    @Update("update users set password_hash= #{passwordHash} where id = #{id}")
+    int update(CserUser cserUser);
 }

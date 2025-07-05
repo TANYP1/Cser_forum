@@ -84,6 +84,20 @@ public class LoginController {
             return Resp.failed("用户注册失败："+e.getMessage(),null);        }
     }
 
+    /**
+     * 用户修改密码
+     * @param loginDTO 用户邮箱和密码
+     * @return 成功或者失败
+     */
+    @PostMapping("/fixPassword")
+    Resp<Void> fixPassword(@RequestBody LoginDTO loginDTO){
+        try{
+            return loginService.fixPassword(loginDTO);
+        }catch (Exception e){
+            logger.error("用户密码修改失败：{}",e.getMessage());
+            return Resp.failed("用户密码修改失败："+e.getMessage(),null);        }
+    }
+
 
 
 }

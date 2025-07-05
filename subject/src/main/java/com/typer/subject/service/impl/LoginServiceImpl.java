@@ -111,7 +111,7 @@ public class LoginServiceImpl implements LoginService {
         //1.验证邮箱是否注册过
         CserUser user = userMapper.getUserByEmail(userEmail);
         //1.1注册过直接返回信息
-        if (user == null) {
+        if (user != null) {
             logger.error("用户已经存在：{}",userEmail);
             throw new IllegalArgumentException("用户已经存在");
         }
@@ -122,11 +122,11 @@ public class LoginServiceImpl implements LoginService {
         emailVerificationCode.setCode(code);
         emailVerificationCode.setEmail(userEmail);
         emailVerificationCode.setCreatedAt(LocalDateTime.now());
-        emailVerificationCode.setExpiresAt(LocalDateTime.now().plusMinutes(5));
+        emailVerificationCode.setExpiresAt(LocalDateTime.now().plusMinutes(10));
         try {
             emailVerificationCodeMapper.insert(emailVerificationCode);
             //4.发送验证码到邮箱
-            mailService.sendSimpleMail(userEmail, "注册验证码", "您的验证码是：" + code);
+            mailService.sendSimpleMail(userEmail, "注册验证码", "您的验证码是：" + code+"\n有效期为10min，请在10min内完成注册");
             logger.info("发送验证码成功：{}",code);
             return Resp.ok("success");
         } catch (Exception e) {
@@ -147,6 +147,7 @@ public class LoginServiceImpl implements LoginService {
             throw new IllegalArgumentException("验证码校验失败");
         }
         //2.存在返回成功
+        logger.info("验证码校验成功：useremail: {},code: {}",userEmail,code);
         return Resp.ok();
     }
 
@@ -162,6 +163,11 @@ public class LoginServiceImpl implements LoginService {
             if (user != null) {
                 logger.error("用户已经注册过了：email: {},name:{}", userEmail, userName);
                 throw new IllegalArgumentException("用户已经注册过！");
+            }
+            //2.1未注册过，校验和刚才的邮箱是否是一个
+            EmailVerificationCode verifyEmail = emailVerificationCodeMapper.selectValidByEmail(userEmail);
+            if(verifyEmail==null){
+                throw new IllegalArgumentException("请使用正确的邮箱注册");
             }
             //3.未注册过，密码加密，写数据库
             String encodePassword = encoder.encode(password);
@@ -179,10 +185,36 @@ public class LoginServiceImpl implements LoginService {
                 logger.error("用户创建失败：{}",user.getEmail());
                 throw new IllegalArgumentException("用户创建失败");
             }
+            logger.info("用户注册成功：email：{}，username：{}",userEmail,userName);
             return Resp.ok();
         }catch (Exception e){
             logger.error("用户创建失败：{}",e.getMessage());
             throw new IllegalArgumentException("用户创建失败: "+e.getMessage());
         }
+    }
+
+    @Override
+    public Resp<Void> fixPassword(LoginDTO loginDTO) {
+        String userEmail = loginDTO.getEmail();
+        String password = loginDTO.getPassword();
+        //1.查询是否有这个用户
+        CserUser user = userMapper.getUserByEmail(userEmail);
+        //2。未注册过，返回失败
+        if (user == null) {
+            logger.error("用户没有注册过！：email: {}", userEmail);
+            throw new IllegalArgumentException("用户没有注册过，请检查邮箱正确与否！");
+        }
+        //2.1注册过，校验和刚才的邮箱是否是一个
+        EmailVerificationCode verifyEmail = emailVerificationCodeMapper.selectValidByEmail(userEmail);
+        if(verifyEmail==null){
+            logger.error("修改时间过期，请重新尝试修改,email:{}",userEmail);
+            throw new IllegalArgumentException("修改时间过期，请重新尝试修改");
+        }
+        //3.修改密码
+        String encodePassword = encoder.encode(password);
+        user.setPasswordHash(encodePassword);
+        userMapper.update(user);
+        logger.info("用户修改密码成功：email: {}",userEmail);
+        return Resp.ok();
     }
 }

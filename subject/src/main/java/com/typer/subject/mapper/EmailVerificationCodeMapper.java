@@ -16,4 +16,7 @@ public interface EmailVerificationCodeMapper {
             "        LIMIT 1")
     EmailVerificationCode selectValidCode(String email, String code);
 
+    @Select("SELECT * from email_verification_code WHERE email=#{email} AND expires_at> NOW()")
+    EmailVerificationCode selectValidByEmail(String email);
+
 }
