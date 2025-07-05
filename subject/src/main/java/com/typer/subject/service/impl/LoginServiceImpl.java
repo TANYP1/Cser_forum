@@ -108,6 +108,10 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public Resp<String> getCode(String userEmail) {
+        if (!isValidEmail(userEmail)) {
+            logger.error("邮箱格式不合理：{}", userEmail);
+            throw new IllegalArgumentException("邮箱格式不合理");
+        }
         //1.验证邮箱是否注册过
         CserUser user = userMapper.getUserByEmail(userEmail);
         //1.1注册过直接返回信息
@@ -115,6 +119,7 @@ public class LoginServiceImpl implements LoginService {
             logger.error("用户已经存在：{}",userEmail);
             throw new IllegalArgumentException("用户已经存在");
         }
+
         //2.未注册过，创建验证码
         String code = CodeGenerator.generateNumberCode(6);
         //3.存储验证码和邮箱
